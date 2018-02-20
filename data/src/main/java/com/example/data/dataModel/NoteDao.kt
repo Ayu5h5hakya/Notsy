@@ -21,6 +21,6 @@ interface NoteDao {
     fun delete(vararg dashData: NoteModel)
 
     @Query("DELETE FROM Notes")
-    fun nuke() : Int
+    fun nuke()
 
 }

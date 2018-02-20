@@ -8,6 +8,7 @@ import com.example.data.NotsyDatabase
 import com.example.data.dataModel.NoteDao
 import com.example.domain.repository.NoteRepository
 import com.example.domain.usecase.AddNoteCase
+import com.example.domain.usecase.DeleteNoteUseCase
 import com.example.domain.usecase.GetAllNotesCase
 import dagger.Module
 import dagger.Provides
@@ -25,7 +26,9 @@ class NoteModule {
 
     @Provides
     @NoteScope
-    fun provideNoteViewModel(addNoteCase: AddNoteCase, getAllNotesCase: GetAllNotesCase) = NoteViewModel(addNoteCase, getAllNotesCase)
+    fun provideNoteViewModel(addNoteCase: AddNoteCase,
+                             getAllNotesCase: GetAllNotesCase,
+                             deleteNoteUseCase: DeleteNoteUseCase) = NoteViewModel(addNoteCase, getAllNotesCase, deleteNoteUseCase)
 
     @Provides
     @NoteScope
@@ -34,6 +37,10 @@ class NoteModule {
     @Provides
     @NoteScope
     fun provideGetNotesUseCase(noteRepository: NoteRepository) = GetAllNotesCase(noteRepository)
+
+    @Provides
+    @NoteScope
+    fun provideDeleteNoteUseCase(noteRepository: NoteRepository) = DeleteNoteUseCase(noteRepository)
 
     @Provides
     @NoteScope

@@ -14,7 +14,12 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
 
     private val noteDao = dao
 
-    override fun createNewNote(noteText: String): Single<Unit> = Single.fromCallable { noteDao.insert(NoteModel(System.currentTimeMillis(), noteText)) }.subscribeOn(Schedulers.newThread())
+    override fun createNewNote(noteText: String): Single<Note> =
+            Single.fromCallable {
+                val timeStamp = System.currentTimeMillis()
+                noteDao.insert(NoteModel(timeStamp, noteText))
+                Note(timeStamp, noteText)
+            }.subscribeOn(Schedulers.newThread())
 
 
     override fun getNotes(): Single<MutableList<Note>> {
@@ -25,7 +30,9 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
         }.subscribeOn(Schedulers.newThread())
     }
 
-    override fun deleteNote(noteId: Int): Boolean {
-        return false
+    override fun deleteNote(noteId: Int): Single<Unit> {
+        return Single.fromCallable {
+            noteDao.nuke()
+        }.subscribeOn(Schedulers.newThread())
     }
 }

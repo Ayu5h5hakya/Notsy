@@ -3,6 +3,8 @@ package com.example.ayush.notsy
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import com.example.ayush.notsy.adapter.NotesAdapter
 import com.example.ayush.notsy.dagger.module.NoteModule
@@ -30,17 +32,27 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         super.onResume()
         compositeDisposable.add(subscribeToTextChanges())
         compositeDisposable.add(subscribeToNotes())
+        compositeDisposable.add(subscribeToNoteDelete())
+        noteViewModel.updateRecycler()
     }
 
     private fun subscribeToTextChanges() : Disposable{
         return noteViewModel.createNoteStream()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    noteViewModel.updateRecycler()
+                    notesAdapter.addNote(it)
                 },{
                     Log.d("Notsy", it.localizedMessage)
                 })
     }
+
+    private fun subscribeToNoteDelete() = noteViewModel.createNoteDeleteStream().
+            observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                noteViewModel.updateRecycler()
+            },{
+                Log.d("Notsy", it.localizedMessage)
+            })
 
     private fun subscribeToNotes() : Disposable{
         return noteViewModel.createAllNotesStream()
@@ -67,6 +79,19 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         when(view?.id){
             R.id.addNoteButton -> noteViewModel.saveNote(newNoteEditText.text.toString().trim())
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?) =when(item?.itemId){
+        R.id.delete_notes ->{
+            noteViewModel.deleteNotes()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
 }
