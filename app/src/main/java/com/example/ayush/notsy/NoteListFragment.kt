@@ -34,7 +34,6 @@ class NoteListFragment : BaseFragment() {
         (context as MainActivity).compositeDisposable.add(subscribeToTextChanges())
         (context as MainActivity).compositeDisposable.add(subscribeToNotes())
         (context as MainActivity).compositeDisposable.add(subscribeToNoteDelete())
-        (context as MainActivity).noteViewModel.updateRecycler()
     }
 
     private fun subscribeToTextChanges(): Disposable {
@@ -63,6 +62,10 @@ class NoteListFragment : BaseFragment() {
                 }, {
                     Log.d("Notsy", it.localizedMessage)
                 })
+    }
+
+    fun onTop(){
+        (context as MainActivity).noteViewModel.updateRecycler()
     }
 
 

@@ -72,7 +72,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun initNotesList(){
-        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, NoteListFragment.getInstance()).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, NoteListFragment.getInstance()).commit()
     }
 
     private fun initNoteDetail(type : Int = 0){
@@ -90,7 +90,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun onBackPressed() {
         if(supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
+            noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel())
             supportFragmentManager.popBackStackImmediate()
+            (supportFragmentManager.fragments[0] as NoteListFragment).onTop()
         }
         else super.onBackPressed()
     }

@@ -3,6 +3,7 @@ package com.example.ayush.notsy
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_notedetail.*
 
 /**
  * Created by ayush on 2/21/18.
@@ -31,6 +32,8 @@ class NoteDetailFragment : BaseFragment() {
 
     }
 
+    fun getNoteModel() = newNoteEditext.text.toString().trim()
+
     companion object {
 
         private val INTENT_TYPE = "intent_notetype"
@@ -43,5 +46,6 @@ class NoteDetailFragment : BaseFragment() {
         }
 
     }
+
 
 }
