@@ -17,7 +17,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     @Inject lateinit var noteViewModel: NoteViewModel
     @Inject lateinit var notesAdapter: NotesAdapter
     private val srcConstraint: ConstraintSet by lazy { ConstraintSet() }
-    private val desConstraint : ConstraintSet by lazy { ConstraintSet() }
+    private val desConstraint: ConstraintSet by lazy { ConstraintSet() }
     private var startAnimation = false
 
 
@@ -46,36 +46,31 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 .inject(this)
     }
 
-    override fun onClick(view: View?) {
-        when (view?.id) {
-            R.id.addNoteButton ->{
+    override fun onClick(view: View) {
+        when (view.id) {
+            R.id.addNoteButton -> {
                 TransitionManager.beginDelayedTransition(setLayout)
-                val constraint = if(startAnimation) srcConstraint else desConstraint
+                val constraint = if (startAnimation) srcConstraint else desConstraint
                 constraint.applyTo(setLayout)
                 startAnimation = !startAnimation
             }
-            R.id.addNoteTextButton ->{
-                if(supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment){
-                    initNoteDetail()
-                }else{
-
-                }
-            }
-            R.id.addNoteImageButton ->{
-                if(supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment){
-                    initNoteDetail(1)
-                }else{
-
-                }
-            }
+            R.id.addNoteTextButton -> addNewNoteType(0)
+            R.id.addNoteImageButton -> addNewNoteType(1)
         }
     }
 
-    private fun initNotesList(){
+    private fun addNewNoteType(type: Int) {
+
+        if (supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment) initNoteDetail(type)
+        else (supportFragmentManager.fragments[1] as NoteDetailFragment).addNoteType(type)
+
+    }
+
+    private fun initNotesList() {
         supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, NoteListFragment.getInstance()).commit()
     }
 
-    private fun initNoteDetail(type : Int = 0){
+    private fun initNoteDetail(type: Int = 0) {
         //0 = text
         //1 = image
         //2 = audio
@@ -89,12 +84,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onBackPressed() {
-        if(supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
+        if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
             noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel())
             supportFragmentManager.popBackStackImmediate()
             (supportFragmentManager.fragments[0] as NoteListFragment).onTop()
-        }
-        else super.onBackPressed()
+        } else super.onBackPressed()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

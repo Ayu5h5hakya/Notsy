@@ -43,6 +43,7 @@ dependencies {
     implementation libs.roomRx
     implementation libs.rxKotlin
     implementation libs.rxAndroid
+    implementation libs.picasso
 
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:26.1.0'

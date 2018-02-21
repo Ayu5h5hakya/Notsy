@@ -34,6 +34,7 @@ class NoteListFragment : BaseFragment() {
         (context as MainActivity).compositeDisposable.add(subscribeToTextChanges())
         (context as MainActivity).compositeDisposable.add(subscribeToNotes())
         (context as MainActivity).compositeDisposable.add(subscribeToNoteDelete())
+        onTop()
     }
 
     private fun subscribeToTextChanges(): Disposable {
