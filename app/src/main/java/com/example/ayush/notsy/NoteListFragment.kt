@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.example.ayush.notsy.adapter.NotesAdapter
+import com.example.ayush.notsy.dagger.module.NoteModule
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_noteslist.*
@@ -15,19 +16,22 @@ import kotlinx.android.synthetic.main.fragment_noteslist.*
  */
 class NoteListFragment : BaseFragment() {
 
-    private var notesAdapter = NotesAdapter()
+    private lateinit var notesAdapter : NotesAdapter
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         notesList.layoutManager = LinearLayoutManager(context)
+        notesAdapter = NotesAdapter(activtiy)
         notesList.adapter = notesAdapter
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?)
             = inflater?.inflate(R.layout.fragment_noteslist, container, false)
 
-    override fun setupFragmentDaggerComponent() {}
+    override fun setupFragmentDaggerComponent() {
+    }
 
     override fun onResume() {
         super.onResume()

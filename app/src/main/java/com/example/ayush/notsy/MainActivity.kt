@@ -12,7 +12,7 @@ import com.example.data.NoteViewModel
 import kotlinx.android.synthetic.main.activity_main_collapsed.*
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), View.OnClickListener {
+class MainActivity : BaseActivity(), View.OnClickListener,NotesAdapter.OnNoteClickListener {
 
     @Inject lateinit var noteViewModel: NoteViewModel
     @Inject lateinit var notesAdapter: NotesAdapter
@@ -42,7 +42,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     override fun setupActivityComponent() {
         NotsyApplication.get(this)
                 .getAppComponent()
-                .plus(NoteModule())
+                .plus(NoteModule(this))
                 .inject(this)
     }
 
@@ -56,7 +56,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             }
             R.id.addNoteTextButton ->{
                 if(supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment){
-                    initNoteDetail()
+                    initNoteDetail(0)
                 }else{
 
                 }
@@ -75,17 +75,21 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, NoteListFragment.getInstance()).commit()
     }
 
-    private fun initNoteDetail(type : Int = 0){
+    fun initNoteDetail(type : Int = -1, id : Long = -1L){
         //0 = text
         //1 = image
         //2 = audio
-        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, NoteDetailFragment.getInstance(type)).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, NoteDetailFragment.getInstance(type,id)).addToBackStack(null).commit()
     }
 
     private fun initChildButtons() {
         startAnimation = false
         srcConstraint.clone(setLayout)
         desConstraint.clone(this, R.layout.activity_main_expanded)
+    }
+
+    override fun onNoteClicked(noteId: Long) {
+        initNoteDetail(id = noteId)
     }
 
     override fun onBackPressed() {

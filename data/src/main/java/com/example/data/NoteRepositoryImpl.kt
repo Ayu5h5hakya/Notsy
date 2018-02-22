@@ -16,16 +16,15 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
 
     override fun createNewNote(noteText: String): Single<Note> =
             Single.fromCallable {
-                val timeStamp = System.currentTimeMillis()
-                noteDao.insert(NoteModel(timeStamp, noteText))
-                Note(timeStamp, noteText)
+                noteDao.insert(NoteModel(textContent = noteText))
+                Note(noteText = noteText)
             }.subscribeOn(Schedulers.newThread())
 
 
     override fun getNotes(): Single<MutableList<Note>> {
         return Single.fromCallable {
             val notes = mutableListOf<Note>()
-            noteDao.getAllData().mapTo(notes) { Note(it.id, it.noteText) }
+            noteDao.getAllData().mapTo(notes) { Note(noteText = it.textContent) }
             notes
         }.subscribeOn(Schedulers.newThread())
     }
@@ -35,4 +34,9 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
             noteDao.nuke()
         }.subscribeOn(Schedulers.newThread())
     }
+
+    override fun getNoteById(noteId: Long) =
+            noteDao.getNoteFromId(noteId)
+                    .map { Note(it.id, it.textContent) }
+                    .subscribeOn(Schedulers.newThread())
 }

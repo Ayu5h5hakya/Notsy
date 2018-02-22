@@ -8,5 +8,5 @@ import android.arch.persistence.room.PrimaryKey
  */
 @Entity(tableName = "Notes")
 data class NoteModel (
-        @PrimaryKey var id : Long = -1,
-        var noteText : String = "")
+        @PrimaryKey(autoGenerate = true) var id : Long = -1,
+        var textContent : String = "")
