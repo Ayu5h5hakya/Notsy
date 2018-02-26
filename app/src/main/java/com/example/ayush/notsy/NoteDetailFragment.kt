@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.example.domain.model.Note
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_notedetail.*
 
@@ -12,15 +13,17 @@ import kotlinx.android.synthetic.main.fragment_notedetail.*
  */
 class NoteDetailFragment : BaseFragment() {
 
-    private var noteflag : Int = 0
-    private var noteId : Long = -1
+    private var noteflag: Int = 0
+    private var noteId: Long = -1
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        when(noteflag){
-            0 ->{}
-            1 ->{}
-            else ->{
+        when (noteflag) {
+            0 -> {
+            }
+            1 -> {
+            }
+            else -> {
                 getNoteContents(noteId)
             }
         }
@@ -31,7 +34,7 @@ class NoteDetailFragment : BaseFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     newNoteEditext.setText(it.noteText)
-                },{
+                }, {
                     Log.d("Notsy", it.localizedMessage)
                 })
     }
@@ -50,7 +53,7 @@ class NoteDetailFragment : BaseFragment() {
 
     }
 
-    fun getNoteModel() = newNoteEditext.text.toString().trim()
+    fun getNoteModel() = Note(noteId, newNoteEditext.text.toString().trim())
 
     companion object {
 
@@ -58,7 +61,7 @@ class NoteDetailFragment : BaseFragment() {
         private val INTENT_NOTEID = "intent_noteId"
 
 
-        fun getInstance(type : Int, id : Long) = NoteDetailFragment().apply {
+        fun getInstance(type: Int, id: Long) = NoteDetailFragment().apply {
             val bundle = Bundle()
             bundle.putLong(INTENT_NOTEID, id)
             bundle.putInt(INTENT_TYPE, type)

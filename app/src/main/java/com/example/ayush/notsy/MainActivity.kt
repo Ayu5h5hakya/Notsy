@@ -3,6 +3,7 @@ package com.example.ayush.notsy
 import android.os.Bundle
 import android.support.constraint.ConstraintSet
 import android.support.transition.TransitionManager
+import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -10,6 +11,7 @@ import com.example.ayush.notsy.adapter.NotesAdapter
 import com.example.ayush.notsy.dagger.module.NoteModule
 import com.example.data.NoteViewModel
 import kotlinx.android.synthetic.main.activity_main_collapsed.*
+import kotlinx.android.synthetic.main.activity_main_home.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteClickListener {
@@ -23,7 +25,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_collapsed)
+        setContentView(R.layout.activity_main_home)
+        setSupportActionBar(notsyToolbar as Toolbar)
         initNotesList()
         initChildButtons()
         addNoteButton.setOnClickListener(this)
@@ -95,7 +98,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
 
     override fun onBackPressed() {
         if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
-            noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel())
+            noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel().noteText)
             supportFragmentManager.popBackStackImmediate()
             (supportFragmentManager.fragments[0] as NoteListFragment).onTop()
         } else super.onBackPressed()
@@ -108,7 +111,11 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item?.itemId) {
         R.id.delete_notes -> {
-            noteViewModel.deleteNotes()
+            if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
+                val notetodelete = (supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel().id
+                if (notetodelete != null) noteViewModel.deleteNotes(notetodelete)
+
+            } else noteViewModel.deleteNotes()
             true
         }
         else -> super.onOptionsItemSelected(item)

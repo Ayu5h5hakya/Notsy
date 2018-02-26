@@ -17,7 +17,7 @@ class NoteViewModel(addNoteCase: AddNoteCase, getAllCase: GetAllNotesCase, delet
 
     fun createNoteStream() = addNewNote.getnotesSubject().flatMap { addNewNote.execute(it).toObservable() }
 
-    fun createNoteDeleteStream() = deleteNotesUseCase.getNoteDeleteSubject().flatMap { deleteNotesUseCase.execute(1).toObservable() }
+    fun createNoteDeleteStream() = deleteNotesUseCase.getNoteDeleteSubject().flatMap { deleteNotesUseCase.execute(it).toObservable() }
 
     fun createAllNotesStream() = getNotesCase.getAllNotesSubject().flatMap { getNotesCase.execute(1).toObservable() }
 
@@ -29,11 +29,13 @@ class NoteViewModel(addNoteCase: AddNoteCase, getAllCase: GetAllNotesCase, delet
         addNewNote.postToStream(noteText)
     }
 
-    fun deleteNotes() {
-        deleteNotesUseCase.postToStream("testing")
+    fun deleteNotes(noteId : Long = -1) {
+        deleteNotesUseCase.postToStream(noteId)
     }
 
     fun getNoteDetails(id : Long) = getNoteDetailCase.execute(id)
+
+
 
 
 }

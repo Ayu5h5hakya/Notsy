@@ -9,12 +9,12 @@ import io.reactivex.subjects.BehaviorSubject
 class DeleteNoteUseCase(repository: NoteRepository) {
 
     private val noteRepository = repository
-    private val deleteNotesSubject: BehaviorSubject<Int> = BehaviorSubject.create()
+    private val deleteNotesSubject: BehaviorSubject<Long> = BehaviorSubject.create()
 
-    fun execute(parameter: Int) = noteRepository.deleteNote(parameter)
+    fun execute(parameter: Long) = noteRepository.deleteNote(parameter)
 
-    fun postToStream(noteText : String){
-        deleteNotesSubject.onNext(1)
+    fun postToStream(noteId : Long){
+        deleteNotesSubject.onNext(noteId)
     }
 
     fun getNoteDeleteSubject() = deleteNotesSubject

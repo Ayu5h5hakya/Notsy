@@ -1,6 +1,7 @@
 package com.example.data.dataModel
 
 import android.arch.persistence.room.*
+import io.reactivex.Completable
 import io.reactivex.Single
 
 /**
@@ -14,6 +15,9 @@ interface NoteDao {
 
     @Query("SELECT * FROM Notes WHERE id = :noteid")
     fun getNoteFromId(noteid : Long) : Single<NoteModel>
+
+    @Query("DELETE FROM Notes WHERE id = :noteid")
+    fun deleteNoteWithId(noteid: Long)
 
     @Insert
     fun insert(vararg dashData: NoteModel)

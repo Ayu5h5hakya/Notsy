@@ -4,6 +4,7 @@ import com.example.data.dataModel.NoteDao
 import com.example.data.dataModel.NoteModel
 import com.example.domain.model.Note
 import com.example.domain.repository.NoteRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
@@ -31,9 +32,10 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
         }.subscribeOn(Schedulers.newThread())
     }
 
-    override fun deleteNote(noteId: Int): Single<Unit> {
+    override fun deleteNote(noteId: Long): Single<Unit> {
         return Single.fromCallable {
-            noteDao.nuke()
+            if (noteId == -1L) noteDao.nuke()
+            else noteDao.deleteNoteWithId(noteId)
         }.subscribeOn(Schedulers.newThread())
     }
 
