@@ -16,7 +16,9 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
 
     override fun createNewNote(noteText: String): Single<Note> =
             Single.fromCallable {
-                noteDao.insert(NoteModel(textContent = noteText))
+                val noteModel = NoteModel()
+                noteModel.textContent = noteText
+                noteDao.insert(noteModel)
                 Note(noteText = noteText)
             }.subscribeOn(Schedulers.newThread())
 
@@ -24,7 +26,7 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
     override fun getNotes(): Single<MutableList<Note>> {
         return Single.fromCallable {
             val notes = mutableListOf<Note>()
-            noteDao.getAllData().mapTo(notes) { Note(noteText = it.textContent) }
+            noteDao.getAllData().mapTo(notes) { Note(id = it.id, noteText = it.textContent) }
             notes
         }.subscribeOn(Schedulers.newThread())
     }
@@ -37,6 +39,8 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
 
     override fun getNoteById(noteId: Long) =
             noteDao.getNoteFromId(noteId)
-                    .map { Note(it.id, it.textContent) }
+                    .map {
+                        Note(noteText = it.textContent)
+                    }
                     .subscribeOn(Schedulers.newThread())
 }

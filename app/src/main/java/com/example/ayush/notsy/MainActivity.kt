@@ -12,12 +12,12 @@ import com.example.data.NoteViewModel
 import kotlinx.android.synthetic.main.activity_main_collapsed.*
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), View.OnClickListener,NotesAdapter.OnNoteClickListener {
+class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteClickListener {
 
     @Inject lateinit var noteViewModel: NoteViewModel
     @Inject lateinit var notesAdapter: NotesAdapter
     private val srcConstraint: ConstraintSet by lazy { ConstraintSet() }
-    private val desConstraint : ConstraintSet by lazy { ConstraintSet() }
+    private val desConstraint: ConstraintSet by lazy { ConstraintSet() }
     private var startAnimation = false
 
 
@@ -48,38 +48,39 @@ class MainActivity : BaseActivity(), View.OnClickListener,NotesAdapter.OnNoteCli
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.addNoteButton ->{
+            R.id.addNoteButton -> {
                 TransitionManager.beginDelayedTransition(setLayout)
-                val constraint = if(startAnimation) srcConstraint else desConstraint
+                val constraint = if (startAnimation) srcConstraint else desConstraint
                 constraint.applyTo(setLayout)
                 startAnimation = !startAnimation
             }
-            R.id.addNoteTextButton ->{
-                if(supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment){
+            R.id.addNoteTextButton -> {
+                if (supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment) {
                     initNoteDetail(0)
-                }else{
+                } else {
 
                 }
             }
-            R.id.addNoteImageButton ->{
-                if(supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment){
+            R.id.addNoteImageButton -> {
+                if (supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment) {
                     initNoteDetail(1)
-                }else{
+                } else {
 
                 }
             }
         }
     }
 
-    private fun initNotesList(){
+    private fun initNotesList() {
         supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, NoteListFragment.getInstance()).commit()
     }
 
-    fun initNoteDetail(type : Int = -1, id : Long = -1L){
+    fun initNoteDetail(type: Int = -1, id: Long? = -1L) {
         //0 = text
         //1 = image
         //2 = audio
-        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, NoteDetailFragment.getInstance(type,id)).addToBackStack(null).commit()
+        if (id != null)
+            supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, NoteDetailFragment.getInstance(type, id)).addToBackStack(null).commit()
     }
 
     private fun initChildButtons() {
@@ -88,17 +89,16 @@ class MainActivity : BaseActivity(), View.OnClickListener,NotesAdapter.OnNoteCli
         desConstraint.clone(this, R.layout.activity_main_expanded)
     }
 
-    override fun onNoteClicked(noteId: Long) {
+    override fun onNoteClicked(noteId: Long?) {
         initNoteDetail(id = noteId)
     }
 
     override fun onBackPressed() {
-        if(supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
+        if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
             noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel())
             supportFragmentManager.popBackStackImmediate()
             (supportFragmentManager.fragments[0] as NoteListFragment).onTop()
-        }
-        else super.onBackPressed()
+        } else super.onBackPressed()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
