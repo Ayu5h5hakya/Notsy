@@ -82,29 +82,24 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
                 .inject(this)
     }
 
-    override fun onClick(view: View?) {
-        when (view?.id) {
+    override fun onClick(view: View) {
+        when (view.id) {
             R.id.addNoteButton -> {
                 TransitionManager.beginDelayedTransition(setLayout)
                 val constraint = if (startAnimation) srcConstraint else desConstraint
                 constraint.applyTo(setLayout)
                 startAnimation = !startAnimation
             }
-            R.id.addNoteTextButton -> {
-                if (supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment) {
-                    initNoteDetail(0)
-                } else {
-
-                }
-            }
-            R.id.addNoteImageButton -> {
-                if (supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment) {
-                    initNoteDetail(1)
-                } else {
-
-                }
-            }
+            R.id.addNoteTextButton -> addNewNoteType(0)
+            R.id.addNoteImageButton -> addNewNoteType(1)
         }
+    }
+
+    private fun addNewNoteType(type: Int) {
+
+        if (supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment) initNoteDetail(type)
+        else (supportFragmentManager.fragments[1] as NoteDetailFragment).addNoteType(type)
+
     }
 
     private fun initNotesList() {

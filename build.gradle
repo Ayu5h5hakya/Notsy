@@ -11,6 +11,7 @@ buildscript {
         daggerCompilerVersion = '2.9'
         jsrApiVersion = '1.0'
         javaxVersion = '1'
+        picassoVersion = '2.5.2'
         libs = [
                 rxKotlin: ('io.reactivex.rxjava2:rxkotlin:' + rxKotlinVersion),
                 rxAndroid:('io.reactivex.rxjava2:rxandroid:' + rxAndroidVersion),
@@ -20,7 +21,8 @@ buildscript {
                 dagger : ('com.google.dagger:dagger:'+daggerVersion),
                 daggerCompiler : ('com.google.dagger:dagger-compiler:' + daggerCompilerVersion),
                 jsrApi : ('javax.annotation:jsr250-api:' + jsrApiVersion),
-                javax : ('javax.inject:javax.inject:' + javaxVersion)
+                javax : ('javax.inject:javax.inject:' + javaxVersion),
+                picasso : ('com.squareup.picasso:picasso:'+picassoVersion )
         ]
     }
     repositories {
