@@ -39,6 +39,7 @@ class NotesAdapter(context: Context) : RecyclerView.Adapter<NotesAdapter.NotesVi
     fun addNote(note: Note) {
         notes.add(note)
         notifyItemInserted(notes.size)
+
     }
 
     fun deleteAll() {

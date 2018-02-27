@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.support.constraint.ConstraintSet
 import android.support.transition.TransitionManager
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.example.ayush.notsy.adapter.NotesAdapter
 import com.example.ayush.notsy.dagger.module.NoteModule
 import com.example.data.NoteViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main_collapsed.*
 import kotlinx.android.synthetic.main.activity_main_home.*
 import javax.inject.Inject
@@ -17,7 +20,6 @@ import javax.inject.Inject
 class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteClickListener {
 
     @Inject lateinit var noteViewModel: NoteViewModel
-    @Inject lateinit var notesAdapter: NotesAdapter
     private val srcConstraint: ConstraintSet by lazy { ConstraintSet() }
     private val desConstraint: ConstraintSet by lazy { ConstraintSet() }
     private var startAnimation = false
@@ -36,8 +38,39 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
 
     override fun onResume() {
         super.onResume()
+        compositeDisposable.add(subscribeToTextChanges())
+        compositeDisposable.add(subscribeToNotes())
+        compositeDisposable.add(subscribeToNoteDelete())
     }
 
+    private fun subscribeToTextChanges(): Disposable {
+        return noteViewModel.createNoteStream()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    (supportFragmentManager.fragments[0] as NoteListFragment).addNote(it)
+                }, {
+                    Log.d("Notsy", it.localizedMessage)
+                })
+    }
+
+    private fun subscribeToNoteDelete() = noteViewModel.createNoteDeleteStream().
+            observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) gobackToList()
+                else noteViewModel.updateRecycler()
+            }, {
+                Log.d("Notsy", it.localizedMessage)
+            })
+
+    private fun subscribeToNotes(): Disposable {
+        return noteViewModel.createAllNotesStream()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    (supportFragmentManager.fragments[0] as NoteListFragment).addAll(it)
+                }, {
+                    Log.d("Notsy", it.localizedMessage)
+                })
+    }
 
     override fun initUiComponents() {
     }
@@ -96,11 +129,15 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
         initNoteDetail(id = noteId)
     }
 
+    private fun gobackToList(){
+        supportFragmentManager.popBackStackImmediate()
+        (supportFragmentManager.fragments[0] as NoteListFragment).onTop()
+    }
+
     override fun onBackPressed() {
         if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
             noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel().noteText)
-            supportFragmentManager.popBackStackImmediate()
-            (supportFragmentManager.fragments[0] as NoteListFragment).onTop()
+            gobackToList()
         } else super.onBackPressed()
     }
 
