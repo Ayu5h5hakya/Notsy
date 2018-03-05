@@ -109,13 +109,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
         } else
         {
-
+            (supportFragmentManager.fragments[1] as NoteDetailFragment).onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
 
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         compositeDisposable.dispose()
     }
 

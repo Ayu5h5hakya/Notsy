@@ -10,9 +10,10 @@ import io.reactivex.subjects.BehaviorSubject
  */
 interface NoteRepository {
 
-    fun createNewNote(noteText : String) : Single<Note>
+    fun createNewNote(note : Note) : Single<Note>
     fun getNotes() : Single<MutableList<Note>>
     fun deleteNote(noteId: Long) : Single<Unit>
     fun getNoteById(noteId: Long) : Single<Note>
+    fun updateNote(note : Note) : Single<Note>
 
 }

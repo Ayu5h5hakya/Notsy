@@ -34,13 +34,15 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
         addNoteButton.setOnClickListener(this)
         addNoteTextButton.setOnClickListener(this)
         addNoteImageButton.setOnClickListener(this)
+
+        compositeDisposable.add(subscribeToTextChanges())
+        compositeDisposable.add(subscribeToNotes())
+        compositeDisposable.add(subscribeToNoteDelete())
+
     }
 
     override fun onResume() {
         super.onResume()
-        compositeDisposable.add(subscribeToTextChanges())
-        compositeDisposable.add(subscribeToNotes())
-        compositeDisposable.add(subscribeToNoteDelete())
     }
 
     private fun subscribeToTextChanges(): Disposable {
@@ -96,8 +98,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
     }
 
     private fun addNewNoteType(type: Int) {
-
-        if (supportFragmentManager.fragments.size != 0 && supportFragmentManager.fragments[0] is NoteListFragment) initNoteDetail(type)
+        addNoteButton.performClick()
+        if (supportFragmentManager.fragments.size == 1 && supportFragmentManager.fragments[0] is NoteListFragment) initNoteDetail(type)
         else (supportFragmentManager.fragments[1] as NoteDetailFragment).addNoteType(type)
 
     }
@@ -124,14 +126,14 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
         initNoteDetail(id = noteId)
     }
 
-    private fun gobackToList(){
+    private fun gobackToList() {
         supportFragmentManager.popBackStackImmediate()
         (supportFragmentManager.fragments[0] as NoteListFragment).onTop()
     }
 
     override fun onBackPressed() {
         if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
-            noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel().noteText)
+            noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel())
             gobackToList()
         } else super.onBackPressed()
     }

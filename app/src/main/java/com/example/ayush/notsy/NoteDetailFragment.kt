@@ -22,6 +22,7 @@ class NoteDetailFragment : BaseFragment() {
 
     private var noteflag: Int = 0
     private var noteId: Long = -1
+    private var note = Note()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -41,10 +42,19 @@ class NoteDetailFragment : BaseFragment() {
         (activtiy as MainActivity).noteViewModel.getNoteDetails(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    newNoteEditext.setText(it.noteText)
+                    note = it
+                    newNoteEditext.setText(note.textContent)
+                    setNoteImage(it.imageContent)
                 }, {
                     Log.d("Notsy", it.localizedMessage)
                 })
+    }
+
+    private fun setNoteImage(imageUrl : String){
+        if (imageUrl.isEmpty()) return
+        noteImageView.visibility = View.VISIBLE
+        note.imageContent = imageUrl
+        Picasso.with(activtiy).load(note.imageContent).into(noteImageView)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +71,11 @@ class NoteDetailFragment : BaseFragment() {
 
     }
 
-    fun getNoteModel() = Note(noteId, newNoteEditext.text.toString().trim())
+    fun getNoteModel() : Note{
+        note.id = noteId
+        note.textContent = newNoteEditext.text.toString().trim()
+        return note
+    }
 
     companion object {
 
@@ -114,8 +128,7 @@ class NoteDetailFragment : BaseFragment() {
 
                 Activity.RESULT_OK -> {
                     data?.data.let {
-                        noteImageView.visibility = View.VISIBLE
-                        Picasso.with(activtiy).load(it).into(noteImageView)
+                        setNoteImage(it.toString())
                     }
                 }
 
