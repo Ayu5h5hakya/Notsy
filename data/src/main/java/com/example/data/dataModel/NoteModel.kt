@@ -10,4 +10,6 @@ import android.arch.persistence.room.PrimaryKey
 data class NoteModel (
         @PrimaryKey(autoGenerate = true) var id : Long? = null,
         var textContent : String = "",
-        var imageContent : String = "")
+        var imageContent : String = "",
+        var dateStamp : String = "",
+        var timeStamp : String = "")

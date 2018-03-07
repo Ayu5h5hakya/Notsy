@@ -74,6 +74,9 @@ class NotesAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.ViewHol
         fun bind(note: ListElement) = itemView.apply {
             note as Note
             childNoteTextView.text = note.textContent
+            val date = note.dateStamp.split(" ")
+            if(adapterPosition == 0 || ((notes[adapterPosition - 1] as Note).dateStamp != note.dateStamp)) dateTextView.text = date[0] + "\n" + date[1]
+            childDateTextView.text = note.timeStamp
         }
 
         override fun onClick(view: View) {
@@ -93,6 +96,8 @@ class NotesAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.ViewHol
             note as Note
             noteText.text = note.textContent
             Picasso.with(context).load(note.imageContent).into(noteImag)
+            val date = note.dateStamp.split(" ")
+            if(adapterPosition == 0 || ((notes[adapterPosition - 1] as Note).dateStamp != note.dateStamp)) dateTextViewImg.text = date[0] + "\n" + date[1]
         }
 
         override fun onClick(view: View) {
