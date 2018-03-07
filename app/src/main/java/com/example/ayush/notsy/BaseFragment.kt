@@ -14,6 +14,13 @@ abstract class BaseFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupFragmentDaggerComponent()
+        if (this is NoteDetailFragment){
+            activtiy as MainActivity
+            activtiy
+        }
+        else{
+
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

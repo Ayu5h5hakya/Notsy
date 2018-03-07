@@ -6,6 +6,7 @@ import com.example.domain.usecase.AddNoteCase
 import com.example.domain.usecase.DeleteNoteUseCase
 import com.example.domain.usecase.GetAllNotesCase
 import com.example.domain.usecase.GetNoteDetailCase
+import io.reactivex.Single
 
 /**
  * Created by ayush on 2/14/18.
@@ -19,7 +20,7 @@ class NoteViewModel(addNoteCase: AddNoteCase, getAllCase: GetAllNotesCase, delet
 
     fun createNoteStream() = addNewNote.getnotesSubject().flatMap {
         Log.d("Notsy", it.toString())
-        addNewNote.execute(it).toObservable()
+        addNewNote.execute(it).onErrorResumeNext { Single.just(Note(id = 100, textContent = "Error")) }.toObservable()
     }
 
     fun createNoteDeleteStream() = deleteNotesUseCase.getNoteDeleteSubject().flatMap { deleteNotesUseCase.execute(it).toObservable() }

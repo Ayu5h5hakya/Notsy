@@ -15,7 +15,7 @@ class NoteRepositoryImpl(dao: NoteDao) : NoteRepository {
 
     private val noteDao = dao
 
-    override fun createNewNote(note : Note): Single<Note> =
+    override fun createNewNote(note: Note): Single<Note> =
             Single.fromCallable {
                 val (dateString, timeString) = Calendar.getInstance().getDateTime()
                 val noteModel = NoteModel()

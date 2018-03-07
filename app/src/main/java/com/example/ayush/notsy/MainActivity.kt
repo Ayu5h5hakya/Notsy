@@ -49,9 +49,15 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
         return noteViewModel.createNoteStream()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    if (!it.textContent.equals("Error"))
                     (supportFragmentManager.fragments[0] as NoteListFragment).addNote(it)
+                    else{
+                        Log.d("Notsy", "Error caught")
+                    }
                 }, {
                     Log.d("Notsy", it.localizedMessage)
+                },{
+                    Log.d("Notsy", "complete")
                 })
     }
 
@@ -143,6 +149,9 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
         return true
     }
 
+    fun setAlarmVisibility(visbility : Boolean){
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?) = when (item?.itemId) {
         R.id.delete_notes -> {
             if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
@@ -150,6 +159,9 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
                 if (notetodelete != null) noteViewModel.deleteNotes(notetodelete)
 
             } else noteViewModel.deleteNotes()
+            true
+        }
+        R.id.set_alarm_note -> {
             true
         }
         else -> super.onOptionsItemSelected(item)
