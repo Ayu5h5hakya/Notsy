@@ -37,7 +37,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
 
         compositeDisposable.add(subscribeToTextChanges())
         compositeDisposable.add(subscribeToNotes())
-        compositeDisposable.add(subscribeToNoteDelete())
 
     }
 
@@ -154,6 +153,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item?.itemId) {
         R.id.delete_notes -> {
+            compositeDisposable.add(subscribeToNoteDelete())
             if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
                 val notetodelete = (supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel().id
                 if (notetodelete != null) noteViewModel.deleteNotes(notetodelete)

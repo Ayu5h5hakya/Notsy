@@ -11,13 +11,16 @@ import io.reactivex.Single
 interface NoteDao {
 
     @Query("SELECT * FROM Notes")
-    fun getAllData() : List<NoteModel>
+    fun getAllData() : Single<List<NoteModel>>
 
     @Query("SELECT * FROM Notes WHERE id = :noteid")
     fun getNoteFromId(noteid : Long) : Single<NoteModel>
 
     @Query("DELETE FROM Notes WHERE id = :noteid")
     fun deleteNoteWithId(noteid: Long)
+
+    @Query("DELETE FROM Notes")
+    fun nuke()
 
     @Insert
     fun insert(vararg dashData: NoteModel)
@@ -27,8 +30,5 @@ interface NoteDao {
 
     @Delete
     fun delete(vararg dashData: NoteModel)
-
-    @Query("DELETE FROM Notes")
-    fun nuke()
 
 }
