@@ -136,6 +136,9 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
         (supportFragmentManager.fragments[0] as NoteListFragment).onTop()
     }
 
+    fun setAlarmVisibility(visbility : Boolean){
+    }
+
     override fun onBackPressed() {
         if (supportFragmentManager.fragments.size > 1 && supportFragmentManager.fragments[1] is NoteDetailFragment) {
             noteViewModel.saveNote((supportFragmentManager.fragments[1] as NoteDetailFragment).getNoteModel())
@@ -148,9 +151,9 @@ class MainActivity : BaseActivity(), View.OnClickListener, NotesAdapter.OnNoteCl
         return true
     }
 
-    fun setAlarmVisibility(visbility : Boolean){
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        return super.onPrepareOptionsMenu(menu)
     }
-
     override fun onOptionsItemSelected(item: MenuItem?) = when (item?.itemId) {
         R.id.delete_notes -> {
             compositeDisposable.add(subscribeToNoteDelete())
